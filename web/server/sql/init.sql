@@ -1,0 +1,38 @@
+CREATE DATABASE mood_journal;
+USE mood_journal;
+
+-- Users table
+CREATE TABLE users (
+  id INT IDENTITY(1,1) PRIMARY KEY,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  email VARCHAR(120),
+  is_pro TINYINT(1) NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- Journal entries
+CREATE TABLE entries (
+id INT IDENTITY(1,1) PRIMARY KEY,
+user_id INT NOT NULL,
+content TEXT NOT NULL,
+mood_label VARCHAR(50) NULL,
+mood_score DECIMAL(5,4) NULL,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+
+-- Paystack payments
+CREATE TABLE payments (
+id INT IDENTITY(1,1) PRIMARY KEY,
+user_id INT NOT NULL,
+reference VARCHAR(100) NOT NULL,
+amount_subunit INT NOT NULL,
+currency CHAR(3) NOT NULL DEFAULT 'ZAR',
+status VARCHAR(30) NOT NULL,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+UNIQUE (reference)
+);
